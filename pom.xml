@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.contest.ali</groupId>
-	<artifactId>pilotlb</artifactId>
+	<artifactId>aliyun-preliminary</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>pilotlb</name>
+	<name>aliyun-preliminary</name>
 
 	<properties>
 		<java.version>1.8</java.version>
