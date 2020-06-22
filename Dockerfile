@@ -4,8 +4,9 @@ VOLUME /tmp
 VOLUME /root/input
 EXPOSE 3355
 #COPY target/pilotlb-0.0.1-SNAPSHOT.jar /root/app/app.jar
-COPY ./ /root/src/
-RUN cd /root/src/aliyun-preliminary
+ADD ./ /root/src/
+
+RUN cd /root/src
 
 RUN mvn clean package
 #ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/root/app/app.jar"]
