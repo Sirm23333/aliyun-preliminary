@@ -22,7 +22,8 @@ public class Iter7MainRinImpl implements MainRun {
         dataHandler.initDataStage1(pilotNames, dataPath);
         new Game( GlobalContain.APP_LIST_SRC , GlobalContain.SERVICE_LIST ,GlobalContain.PILOT_LIST,false).gameRun();
         dataHandler.formatPilotList(GlobalContain.PILOT_LIST);
-        return result = dataHandler.buildResultMap(GlobalContain.PILOT_LIST);
+//        return result = dataHandler.buildResultMap(GlobalContain.PILOT_LIST);
+        return result;
     }
 
     @Override

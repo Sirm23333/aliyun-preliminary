@@ -3,6 +3,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.contest.ali.pilotlb.constant.GlobalConstant;
 import com.contest.ali.pilotlb.constant.ObjectFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,10 @@ import java.util.Map;
 @Slf4j
 @RestController
 public class Controller {
+
+    @Value("${data_path}")
+    private String dataPath;
+
     @GetMapping(value = "/ready")
     public void ready() {
         log.info("ready...");
@@ -22,7 +27,7 @@ public class Controller {
             log.error("bad request parameters : no {}" , GlobalConstant.KEY_PILOTS);
             throw new RuntimeException("bad request parameters!");
         }
-        return ObjectFactory.mainRun.stage1Run((List<String>) jsonPilots.get(GlobalConstant.KEY_PILOTS) , GlobalConstant.DATA_PATH);
+        return ObjectFactory.mainRun.stage1Run((List<String>) jsonPilots.get(GlobalConstant.KEY_PILOTS) , dataPath);
     }
 
     @PostMapping(value = "/p2_start")

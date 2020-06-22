@@ -9,6 +9,7 @@ import com.contest.ali.pilotlb.service.impl.iter7_syp_0620.model.ServiceBitMap;
 import com.contest.ali.pilotlb.util.NumberUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.springframework.context.annotation.Profile;
 
 import java.io.File;
 import java.io.IOException;

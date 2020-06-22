@@ -6,7 +6,18 @@ spring:
          charset: UTF-8
          enabled: true
          force: true
+   profiles:
+      active: dev
+
+data_path: /home/sirm/文档/ali-pilot/input/data.json
 
 logging:
   level: 
      root: info
+
+---
+
+spring:
+  profiles: prod
+
+data_path: /root/input/data.json
