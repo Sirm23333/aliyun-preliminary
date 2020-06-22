@@ -1,0 +1,12 @@
+server:
+  port: 3355
+spring:
+   http:
+      encoding:
+         charset: UTF-8
+         enabled: true
+         force: true
+
+logging:
+  level: 
+     root: info
