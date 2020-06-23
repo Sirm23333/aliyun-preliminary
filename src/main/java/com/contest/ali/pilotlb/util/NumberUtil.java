@@ -114,4 +114,11 @@ public class NumberUtil {
         double sumAvg = sum / data.length;
         return Math.sqrt(sqSumAvg - sumAvg * sumAvg);
     }
+    public static long calSum(long[] data){
+        long sum = 0;
+        for(long l : data){
+            sum += l;
+        }
+        return sum;
+    }
 }

@@ -80,6 +80,7 @@ public class Game{
         double stdCon = NumberUtil.calStd(cons);
         return stdMem * 0.01 + stdCon;
     }
+
     private double score(long[] mems, long[] cons , int idx , int add1 , int add2){
         double stdMem = NumberUtil.calStd(mems,idx,add1);
         double stdCon = NumberUtil.calStd(cons,idx,add2);
