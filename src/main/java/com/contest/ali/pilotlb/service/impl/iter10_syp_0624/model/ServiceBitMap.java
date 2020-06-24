@@ -40,14 +40,12 @@ public class ServiceBitMap implements Cloneable{
 
     /**
      * 计算依赖服务内存
-     * @return
      */
     public long calMem(){
         return calMem(this.srvArr);
     }
     /**
      * 计算依赖服务数
-     * @return
      */
     public long calSrvCnt(){
         long tmp;
@@ -75,7 +73,6 @@ public class ServiceBitMap implements Cloneable{
 
     /**
      * 添加多个服务
-     * @param another
      */
     public void addAllService(ServiceBitMap another){
         int m = Math.min(another.srvArr.length , this.srvArr.length);
@@ -86,8 +83,6 @@ public class ServiceBitMap implements Cloneable{
 
     /**
      * 计算两个ServiceBitmap重叠的内存量
-     * @param another
-     * @return
      */
     public long calSameMem(ServiceBitMap another){
         long[] re = new long[this.srvArr.length];
@@ -99,7 +94,6 @@ public class ServiceBitMap implements Cloneable{
 
     /**
      * 输出服务列表
-     * @return
      */
     public List<Service> getSrvList(){
         List<Service> list = new ArrayList<>();
@@ -119,7 +113,6 @@ public class ServiceBitMap implements Cloneable{
 
     /**
      * 由服务列表构建服务bitmap
-     * @param list
      */
     public void setSrvBitMap(List<Service> list){
         initSrvArr();

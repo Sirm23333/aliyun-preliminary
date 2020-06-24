@@ -23,7 +23,7 @@ public class App implements Comparable,Cloneable{
     }
 
     @Override
-    public App clone() throws CloneNotSupportedException {
+    public App clone() {
         List<Service> srvs = new ArrayList<>();
         srvs.addAll(srvList);
         return new App(id,name,count,(ServiceBitMap) srvBitMap.clone(),srvs,srvMem);

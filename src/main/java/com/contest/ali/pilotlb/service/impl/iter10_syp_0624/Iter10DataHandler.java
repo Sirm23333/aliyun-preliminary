@@ -158,14 +158,11 @@ public class Iter10DataHandler implements DataHandler {
         App app1 , app2;
         double tmpSimilarity;
         for(int i = 0; i < start; ++i){
-            try {
-                App app = apps.get(i).clone();
-                GlobalContain.APP_LIST_MERGE.add(app );
-                GlobalContain.APP_MERGE_NAME_MAP.put(app.name , app);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
+            App app = apps.get(i).clone();
+            GlobalContain.APP_LIST_MERGE.add(app );
+            GlobalContain.APP_MERGE_NAME_MAP.put(app.name , app);
         }
+        // dfs合并app
         for(int i = start; i < end; ++i){
             if(!merged[i]){
                 StringBuffer mergedAppName = new StringBuffer();
@@ -198,13 +195,9 @@ public class Iter10DataHandler implements DataHandler {
             }
         }
         for(int i = end; i < apps.size(); ++i){
-            try {
-                App app = apps.get(i).clone();
-                GlobalContain.APP_LIST_MERGE.add(app );
-                GlobalContain.APP_MERGE_NAME_MAP.put(app.name , app);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
+            App app = apps.get(i).clone();
+            GlobalContain.APP_LIST_MERGE.add(app );
+            GlobalContain.APP_MERGE_NAME_MAP.put(app.name , app);
         }
         GlobalContain.APP_SUM_MERGE = GlobalContain.APP_LIST_MERGE.size();
     }
@@ -216,11 +209,7 @@ public class Iter10DataHandler implements DataHandler {
     private void mergeAppByCoverSimilarity(List<App> appsSrc , double similarity , long memUpper , long conUpper  ){
         List<App> apps = new ArrayList<>();
         for(App app : appsSrc){
-            try {
-                apps.add(app.clone());
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
+            apps.add(app.clone());
         }
         Collections.sort(apps);
         boolean[] merged = new boolean[apps.size()]; // merged为true  表示已经合并到其他app了
