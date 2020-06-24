@@ -7,8 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.*;
 
 /**
- *
- */
+ * 第一阶段为对全局博弈,博弈均衡后,再将1%的app打乱,打乱规则为随机选择app,放入使比例降低最多的pilot中,尝试20次取最好结果
+ * 第一阶段为对全局博弈,博弈均衡后,再将1%的app打乱,打乱规则为随机选择app,放入使比例降低最多的pilot中,尝试3次取最好结果
+ * */
 @Slf4j
 public class Iter9MainRunImpl implements MainRun {
 
