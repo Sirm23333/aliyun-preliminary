@@ -76,6 +76,17 @@ public class Game{
         preDistribution();
     }
     public void gameRun(){
+        if(flag){
+            gameRunSub_2();
+        }else {
+            gameRunSub_1();
+        }
+    }
+
+    /**
+     * 第一阶段博弈主逻辑
+     */
+    private void gameRunSub_1(){
         int appIdx , fromPilotIdx,toPilotIdx;
         App tmpApp;
         int[] tmpBestAppsIdx = appsIdx;
@@ -85,12 +96,13 @@ public class Game{
             if(i > 0){
                 randomNum.init();
                 // 打破均衡
-                for(int j = 0; j < apps.size() * upsetRatio; ++j){
+                int size = (int) (apps.size() * upsetRatio);
+                for(int j = 0; j < size; ++j){
                     appIdx = randomNum.next();
                     tmpApp = apps.get(appIdx);
                     fromPilotIdx = appsIdx[appIdx];
                     delAppFromPilot(tmpApp , fromPilotIdx);
-                    toPilotIdx = getBestIdx(tmpApp,4);
+                    toPilotIdx = getBestIdx2(tmpApp,4);
                     setAppToPilot(tmpApp , toPilotIdx);
                 }
                 randomNum.init();
@@ -101,7 +113,7 @@ public class Game{
                 // 从原来的pilot中删除
                 delAppFromPilot(tmpApp , fromPilotIdx);
                 // 找一个最好的pilot,第一阶段考虑整体分数,第二阶段只考虑标准差之和
-                toPilotIdx = flag ? getBestIdx(tmpApp,1) : getBestIdx(tmpApp,3);
+                toPilotIdx = getBestIdx2(tmpApp,3);
                 // 放入最好的pilot
                 setAppToPilot(tmpApp , toPilotIdx);
                 if(toPilotIdx != fromPilotIdx){
@@ -109,7 +121,7 @@ public class Game{
                 }
             }
             // 第二阶段选择标准差小的结果
-            double score = flag ? score1(mems,cons) : score3(mems,cons);
+            double score =  score3(mems,cons);
             if(score < tmpBestScore){
                 tmpBestScore = score;
                 tmpBestAppsIdx = Arrays.copyOf(appsIdx,appsIdx.length);
@@ -119,13 +131,62 @@ public class Game{
         appsIdx = tmpBestAppsIdx;
         for(Pilot pilot : pilots){
             pilot.appList.clear();
-            if(!flag) pilot.srvBM.initSrvArr();
+            pilot.srvBM.initSrvArr(); // 第一阶段加载的内存不会常驻
         }
         for(int i = 0; i < appsIdx.length; ++i){
             pilots.get(appsIdx[i]).addApp(apps.get(i));
         }
     }
-
+    private void gameRunSub_2(){
+        int appIdx , fromPilotIdx,toPilotIdx;
+        App tmpApp;
+        int[] tmpBestAppsIdx = appsIdx;
+        double tmpBestScore = Double.MAX_VALUE;
+        RandomNum randomNum = new RandomNum(apps.size());
+        for(int i = 0; i < tryCnt; ++i){
+            if(i > 0){
+                randomNum.init();
+                // 打破均衡
+                int size = (int) (apps.size() * upsetRatio);
+                for(int j = 0; j < size; ++j){
+                    appIdx = randomNum.next();
+                    tmpApp = apps.get(appIdx);
+                    fromPilotIdx = appsIdx[appIdx];
+                    delAppFromPilot(tmpApp , fromPilotIdx);
+                    toPilotIdx = getBestIdx2(tmpApp,4);
+                    setAppToPilot(tmpApp , toPilotIdx);
+                }
+                randomNum.init();
+            }
+            while(-1 < (appIdx = randomNum.next())){
+                tmpApp = apps.get(appIdx);
+                fromPilotIdx = appsIdx[appIdx];
+                // 从原来的pilot中删除
+                delAppFromPilot(tmpApp , fromPilotIdx);
+                // 找一个最好的pilot,第一阶段考虑整体分数,第二阶段只考虑标准差之和
+                toPilotIdx = getBestIdx2(tmpApp,1);
+                // 放入最好的pilot
+                setAppToPilot(tmpApp , toPilotIdx);
+                if(toPilotIdx != fromPilotIdx){
+                    randomNum.init();
+                }
+            }
+            // 第二阶段选择标准差小的结果
+            double score = score1(mems,cons);
+            if(score < tmpBestScore){
+                tmpBestScore = score;
+                tmpBestAppsIdx = Arrays.copyOf(appsIdx,appsIdx.length);
+            }
+//            log.info("第{}次博弈,分数{},比例{},目前最好分数{}",i,score,score4(mems) / GlobalContain.SERVICE_MEM,tmpBestScore);
+        }
+        appsIdx = tmpBestAppsIdx;
+        for(Pilot pilot : pilots){
+            pilot.appList.clear();
+        }
+        for(int i = 0; i < appsIdx.length; ++i){
+            pilots.get(appsIdx[i]).addApp(apps.get(i));
+        }
+    }
     private void preDistribution(){
         // 对app编号
         for(int i = 0; i < apps.size(); ++i){
@@ -162,7 +223,7 @@ public class Game{
         // 剩余没有分配的app,按最优匹配原则分配
         for(int i = 0; i < appsIdx.length; i++){
             if(appsIdx[i] < 0){
-                setAppToPilot(apps.get(i),getBestIdx(apps.get(i),1));
+                setAppToPilot(apps.get(i),getBestIdx2(apps.get(i),1));
             }
         }
     }
@@ -202,6 +263,33 @@ public class Game{
         }
         return bestPilotIdx;
     }
+    private int getBestIdx2(App app , int flag){
+        double bestScore = Double.MAX_VALUE, tmpScore = bestScore;
+        int  bestPilotIdx = 0 , addMem ;
+        int size = pilots.size();
+        for(int i = 0; i < size; ++i){
+            addMem = 0;
+            for(Service service : app.srvList){
+                if(appCntEachService[i][service.id] == 0){
+                    addMem += service.count;
+                }
+            }
+            switch (flag){
+                case 1:tmpScore = score1(mems,cons,i,addMem,app.count);break; // 标准差之和
+                case 3:tmpScore = score3(mems,cons,i,addMem,app.count);break; // 标准差之和 * 比例
+                case 4:tmpScore = score4(mems,addMem);break; // 内存总和
+                case 5:tmpScore = score5(mems,i,addMem);break; // 内存标准差
+                default:break;
+            }
+            if(bestScore > tmpScore){
+                bestScore = tmpScore;
+                bestPilotIdx = i;
+            }
+        }
+        return bestPilotIdx;
+    }
+
+
 
     private void setAppToPilot(App app , int pilotIdx){
         appsIdx[app.id] = pilotIdx;
@@ -235,7 +323,7 @@ public class Game{
     /**
      * mems[idx]增加add1 cons[idx]增加add2后的标准差的和
      */
-    private double score2(long[] mems, long[] cons , int idx , int add1 , int add2){
+    private double score1(long[] mems, long[] cons , int idx , long add1 , long add2){
         double stdMem = NumberUtil.calStd(mems,idx,add1);
         double stdCon = NumberUtil.calStd(cons,idx,add2);
         return stdMem * 0.01 + stdCon;
@@ -250,6 +338,11 @@ public class Game{
         return (scores[0] * 0.01 + stdCon) * scores[1] / GlobalContain.SERVICE_MEM;
     }
 
+    private double score3(long[] mems, long[] cons, int i, long addMem, long count) {
+        double[] scores = NumberUtil.calStdAndSum(mems,i,addMem);
+        double stdCon = NumberUtil.calStd(cons,i,count);
+        return (scores[0] * 0.01 + stdCon) * scores[1] / GlobalContain.SERVICE_MEM;
+    }
     /**
      * 实际加载内存
      */
@@ -257,7 +350,10 @@ public class Game{
         long sum = NumberUtil.calSum(mems);
         return sum;
     }
-
+    private double score4(long[] mems , long add){
+        long sum = NumberUtil.calSum(mems);
+        return sum + add;
+    }
     /**
      * 内存标准差
      */
@@ -265,7 +361,10 @@ public class Game{
         double std = NumberUtil.calStd(mems);
         return std;
     }
-
+    private double score5(long[] mems , int idx , long add){
+        double std = NumberUtil.calStd(mems , idx , add);
+        return std;
+    }
     class RandomNum{
         private List<Integer> rest;
         private List<Integer> temp;

@@ -97,11 +97,24 @@ public class NumberUtil {
         double[] re = {Math.sqrt(sqSumAvg - sumAvg * sumAvg) , sum};
         return re;
     }
-
+    public static double[] calStdAndSum(long[] data , int idx , long add){
+        double sum = 0; // 和
+        double sqSum = 0; // 平方和
+        for(double i : data){
+            sum += i;
+            sqSum += i * i;
+        }
+        sum += add;
+        sqSum += 2 * add * data[idx] + add * add;
+        double sqSumAvg = sqSum / data.length;
+        double sumAvg = sum / data.length;
+        double[] re = {Math.sqrt(sqSumAvg - sumAvg * sumAvg) , sum};
+        return re;
+    }
     /**
      * 在data[idx]上增加add后的方差
      */
-    public static double calStd(long[] data , int idx , int add){
+    public static double calStd(long[] data , int idx , long add){
         double sum = 0; // 和
         double sqSum = 0; // 平方和
         for(double i : data){
@@ -114,6 +127,7 @@ public class NumberUtil {
         double sumAvg = sum / data.length;
         return Math.sqrt(sqSumAvg - sumAvg * sumAvg);
     }
+
     public static long calSum(long[] data){
         long sum = 0;
         for(long l : data){

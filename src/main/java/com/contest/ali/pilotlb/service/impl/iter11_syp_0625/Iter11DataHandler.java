@@ -80,13 +80,13 @@ public class Iter11DataHandler implements DataHandler {
 
         // 一次合并
         mergeAppByJacSimilarity(GlobalContain.APP_LIST_SRC,jacSimilarity);
-        printAppListFeature( GlobalContain.APP_LIST_MERGE);
+//        printAppListFeature( GlobalContain.APP_LIST_MERGE);
 
         // 二次合并
         mergeAppByCoverSimilarity(GlobalContain.APP_LIST_MERGE,coverSimilarity,
                 GlobalContain.SERVICE_MEM / GlobalContain.PILOT_SUM * secondMergeMemUpper,
                 GlobalContain.CON_SUM / GlobalContain.PILOT_SUM );
-        printAppListFeature( GlobalContain.APP_LIST_MERGE_II);
+//        printAppListFeature( GlobalContain.APP_LIST_MERGE_II);
     }
 
     /**
