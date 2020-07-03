@@ -26,8 +26,11 @@ public class Iter11MainRunImpl implements MainRun {
     Map<String, List<String>> result = new HashMap<>();
 
 
+
     @Override
     public Map<String, List<String>> stage1Run(List<String> pilotNames, String dataPath) {
+        GlobalConstant.START_TIME = System.currentTimeMillis();
+        GlobalConstant.END_TIME = GlobalConstant.START_TIME + GlobalConstant.STAGE_1_TIME_LIMIT - 500;
         dataHandler.initDataStage1(pilotNames, dataPath);
         new Game( GlobalContain.APP_LIST_MERGE_II , GlobalContain.SERVICE_LIST , GlobalContain.PILOT_LIST, GlobalConstant.STAGE_1,10,0.1).gameRun();
         dataHandler.formatPilotListII(GlobalContain.PILOT_LIST); // 把第二次合并的拆开
@@ -39,6 +42,8 @@ public class Iter11MainRunImpl implements MainRun {
 
     @Override
     public Map<String, List<String>> stage2Run(JSONObject data) {
+        GlobalConstant.START_TIME = System.currentTimeMillis();
+        GlobalConstant.END_TIME = GlobalConstant.START_TIME + GlobalConstant.STAGE_2_TIME_LIMIT - 500;
         dataHandler.initDataStage2(data);
         new Game( GlobalContain.APP_LIST_SRC  , GlobalContain.SERVICE_LIST , GlobalContain.PILOT_LIST,GlobalConstant.STAGE_2,2,0.02).gameRun();
         return result = dataHandler.buildResultMap(GlobalContain.PILOT_LIST);

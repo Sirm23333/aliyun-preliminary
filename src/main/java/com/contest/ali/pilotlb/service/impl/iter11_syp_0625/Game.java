@@ -26,6 +26,7 @@ public class Game{
     private boolean flag;               // flag为true时,表示第二阶段,对pilots已经加载的内存只增不减
     private int tryCnt;                 // 博弈均衡后再重新打乱重试的次数
     private double upsetRatio;          // 将百分比upsetRatio的app打乱
+    private boolean timeout = false;
 
     /**
      *
@@ -52,6 +53,9 @@ public class Game{
             case(GlobalConstant.STAGE_2):flag = true;break;
             default:break;
         }
+        if(System.currentTimeMillis() > GlobalConstant.END_TIME){
+            timeout = true;
+        }
         preDistribution();
     }
     public Game(List<App> apps , List<Service> services , List<Pilot> pilots , String stage , int tryCnt , double upsetRatio){
@@ -73,6 +77,9 @@ public class Game{
             case(GlobalConstant.STAGE_2):flag = true;break;
             default:break;
         }
+        if(System.currentTimeMillis() > GlobalConstant.END_TIME){
+            timeout = true;
+        }
         preDistribution();
     }
     public void gameRun(){
@@ -92,7 +99,7 @@ public class Game{
         int[] tmpBestAppsIdx = appsIdx;
         double tmpBestScore = Double.MAX_VALUE;
         RandomNum randomNum = new RandomNum(apps.size());
-        for(int i = 0; i < tryCnt; ++i){
+        for(int i = 0; i < tryCnt && !timeout; ++i){
             if(i > 0){
                 randomNum.init();
                 // 打破均衡
@@ -119,6 +126,10 @@ public class Game{
                 if(toPilotIdx != fromPilotIdx){
                     randomNum.init();
                 }
+                if(System.currentTimeMillis() > GlobalConstant.END_TIME){
+                    timeout = true;
+                    break;
+                }
             }
             // 第二阶段选择标准差小的结果
             double score =  score3(mems,cons);
@@ -143,7 +154,7 @@ public class Game{
         int[] tmpBestAppsIdx = appsIdx;
         double tmpBestScore = Double.MAX_VALUE;
         RandomNum randomNum = new RandomNum(apps.size());
-        for(int i = 0; i < tryCnt; ++i){
+        for(int i = 0; i < tryCnt && !timeout; ++i){
             if(i > 0){
                 randomNum.init();
                 // 打破均衡
@@ -169,6 +180,10 @@ public class Game{
                 setAppToPilot(tmpApp , toPilotIdx);
                 if(toPilotIdx != fromPilotIdx){
                     randomNum.init();
+                }
+                if(System.currentTimeMillis() > GlobalConstant.END_TIME){
+                    timeout = true;
+                    break;
                 }
             }
             // 第二阶段选择标准差小的结果
