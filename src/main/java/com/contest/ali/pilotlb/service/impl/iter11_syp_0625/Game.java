@@ -131,7 +131,6 @@ public class Game{
                     break;
                 }
             }
-            // 第二阶段选择标准差小的结果
             double score =  score3(mems,cons);
             if(score < tmpBestScore){
                 tmpBestScore = score;

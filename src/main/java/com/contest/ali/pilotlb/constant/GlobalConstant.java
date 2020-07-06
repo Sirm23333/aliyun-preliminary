@@ -20,5 +20,5 @@ public class GlobalConstant {
 //    public final static long STAGE_1_TIME_LIMIT = 5 * 1000 ;
     // 阶段2时间限制(ms) 15秒
     public final static long STAGE_2_TIME_LIMIT = 15 * 1000 ;
-//    public final static long STAGE_2_TIME_LIMIT = 500 ;
+//    public final static long STAGE_2_TIME_LIMIT = 1000 ;
 }
